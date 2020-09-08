@@ -35,7 +35,16 @@ pub fn package_data() -> Option<Map<String, Value>> {
 
 #[macro_export]
 macro_rules! toml_get {
-    ($variant:ident $toml:ident.$property:ident) => {
-        if let Value::$variant(v) = $toml.get(stringify!($property)).unwrap() { v } else { unreachable!() }
+    ($variant:ident $toml:ident.$property:ident) => {{
+        let property = $toml.get(stringify!($property)).expect(format!("{}.{} does not exist", stringify!($toml), stringify!($ident)).as_str());
+        toml_get!($variant property)
+    }};
+    ($variant:ident $value:expr) => {
+        if let Value::$variant(v) = $value {
+            v
+        } 
+        else {
+            panic!("{} is not a {}", stringify!($value), stringify!($type));
+        }
     };
 }

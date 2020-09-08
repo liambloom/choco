@@ -3,9 +3,17 @@ name = "choco"
 version = "0.1.0"
 authors = ["liambloom <liamrbloom@gmail.com>"]
 edition = "2018"
+description = "A simple java package manager"
+license = "GPL-3.0-or-later"
+repository = "https://github.com/liambloom/choco"
+keywords = ["java", "package manager"]
+categories = ["command-line-utilities"]
+include = ["COPYING"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-clap = "2.33.3"
-toml = "0.5.6"
+clap = "~2.33.3"
+toml = "~0.5.6"
+indoc = "~1.0.2"
+regex = "^1.3.9"

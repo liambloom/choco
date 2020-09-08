@@ -17,10 +17,18 @@
     along with Choco.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-pub fn main() {
-    println!(
-        r#"
-        foo \
-        bar"#
-    )
+use std::{
+    path::PathBuf,
+    fs,
+    io::Result,
+};
+use regex::Regex;
+
+// This should use gitignore syntax (https://git-scm.com/docs/gitignore)
+pub fn get(path: &str) -> Vec<PathBuf> {
+    let mut paths = Vec::new();
+
+    
+
+    paths
 }

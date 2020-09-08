@@ -17,5 +17,19 @@
     along with Choco.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-pub mod help;
+macro_rules! map {
+    ($($key:expr => $value:expr),*) => {{
+        let mut m = std::collections::HashMap::new();
+        $(
+            m.insert($key, $value);
+        )*
+        m
+    }};
+}
+
+/// Gets metadata about the package from Cargo.toml
 pub mod meta;
+/// Finds files
+pub mod files;
+/// Stores large bodies of text that are printed somewhere in the program
+pub mod text;
