@@ -17,19 +17,11 @@
     along with Choco.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-macro_rules! map {
-    ($($key:expr => $value:expr),*) => {{
-        let mut m = std::collections::HashMap::new();
-        $(
-            m.insert($key, $value);
-        )*
-        m
-    }};
-}
-
+/// The macros of this crate that don't really fit in anywhere else
+pub mod macros;
 /// Gets metadata about the package from Cargo.toml
 pub mod meta;
 /// Finds files
 pub mod files;
-/// Stores large bodies of text that are printed somewhere in the program
-pub mod text;
+/// For retrieving license information
+pub mod license;

@@ -17,8 +17,10 @@
     along with Choco.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-use std::{ops::Range, collections::HashMap, fmt::Write};
+use std::{ops::Range, collections::HashMap, fmt::Write, process};
 use indoc::indoc;
+use clap::ArgMatches;
+use crate::{map, error};
 
 /// An &str containing the entirety of the license
 pub const LICENSE: &str = include_str!("../COPYING");
@@ -57,13 +59,43 @@ pub fn section_pages() -> HashMap<u8, Range<usize>> {
 
 pub fn section_text(mut sections: Vec<u8>) -> String {
     sections.sort_unstable();
-    let lines = LICENSE.lines();
     let section_pages = section_pages();
-    //let sections = sections.iter().map(|s| section_pages.get(s));
-    let s = String::new();
-    todo!();
+    let mut s = String::new();
     for i in sections {
-        //writeln!(s, "{}", section_pages.get(&i))
+        match section_pages.get(&i) {
+            Some(range) => {
+                let mut lines = LICENSE.lines().take(range.end);
+                writeln!(s, "{}", lines.nth(range.start - 1).unwrap());
+                for line in lines {
+                    writeln!(s, "{}", line);
+                }
+            },
+            None => error!("GPL 3.0 does not have a section {}, It only has sections 0-17", &i)
+        }
     }
     s
+}
+
+pub fn commands(matches: &ArgMatches) {
+    if let Some(matches) = matches.subcommand_matches("license") {
+        if matches.is_present("warranty") {
+            print!("{}", section_text(vec![15, 17]));
+        }
+        if matches.is_present("copying") {
+            print!("{}", section_text((3..=7).collect()));
+        }
+        if matches.is_present("section") {
+            let section_numbers = matches.values_of("section").unwrap();
+            let mut v = Vec::new();
+            for section_number in section_numbers {
+                v.push(
+                    match section_number.parse() {
+                        Ok(n) => n,
+                        Err(_) => error!("{} is not a valid section number", section_number)
+                    }
+                );
+            }
+            print!("{}", section_text(v));
+        }
+    }
 }

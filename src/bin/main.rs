@@ -23,10 +23,7 @@ use std::{
     fmt::Write,
     //include_str,
 };
-use choco::{
-    meta::*,
-    *,
-};
+use choco::*;
 use clap::clap_app;
 use toml::Value;
 use indoc::printdoc;
@@ -38,7 +35,7 @@ TODO:
 */
 
 fn main() {
-    let pkg = package_data().unwrap();
+    let pkg = meta::package_data().unwrap();
     let version: &str = toml_get!(String pkg.version).as_str();
     let about: &str = toml_get!(String pkg.description).as_str();
     let authors = toml_get!(Array pkg.authors);
@@ -68,12 +65,13 @@ fn main() {
         (@arg about: --about "Prints about information")
         (@subcommand license => 
             (about: "Prints information about the license")
+            //(@arg choco_license: --choco "Prints choco license information")
             (@group info_type => 
                 (@arg warranty: -w --warranty "Prints warranty information") // Should print sections 15 and 17 of GPL 3.0
                 (@arg copying: -c --copying "Prints copying terms") // Should print sections 3-7 of GPL 3.0
                 (@arg terms_and_conditions: -t --("terms-and-conditions") "Prints license terms and conditions")
                 (@arg preamble: -p --preamble "Prints license preamble")
-                (@arg section: -s --section [SECTION_NUMBER] "Prints the requested section")
+                (@arg section: -s --section [SECTION_NUMBER] ... "Prints the requested section")
                 (@arg how_to_apply: -a --("how-to-apply") "Prints how to apply the license")
                 (@arg full: -f --full "Prints the full license text")
             )
@@ -83,9 +81,16 @@ fn main() {
     if matches.is_present("about") {
         printdoc!("
             Choco  Copyright (C) 2020  Liam Bloom
+
+            This program is a simple java package manager. I created this primarily for myself, to learn
+            various java commands and learn how to create a command line app in rust, but it is available
+            for anyone else who wants it.
+
             This program comes with ABSOLUTELY NO WARRANTY; for details type `choco license -w'.
             This is free software, and you are welcome to redistribute it
-            under certain conditions; type `show c' for details.
+            under certain conditions; type `choco license -c' for details.
         ");
     }
+
+    license::commands(&matches);
 }
