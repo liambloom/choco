@@ -60,17 +60,25 @@ pub fn section_pages() -> HashMap<u8, Range<usize>> {
 pub fn section_text(mut sections: Vec<u8>) -> String {
     sections.sort_unstable();
     let section_pages = section_pages();
-    let mut s = String::new();
+    let mut ranges = Vec::with_capacity(sections.len());
     for i in sections {
-        match section_pages.get(&i) {
-            Some(range) => {
-                let mut lines = LICENSE.lines().take(range.end);
-                writeln!(s, "{}", lines.nth(range.start - 1).unwrap());
-                for line in lines {
-                    writeln!(s, "{}", line);
-                }
-            },
-            None => error!("GPL 3.0 does not have a section {}, It only has sections 0-17", &i)
+        ranges.push(
+            match section_pages.get(&i) {
+                Some(range) => range,
+                None => error!("GPL 3.0 does not have a section {}, It only has sections 0-17", &i)
+            }
+        );
+    }
+    license_text(ranges)
+}
+
+pub fn license_text(ranges: Vec<&Range<usize>>) -> String {
+    let mut s = String::new();
+    for range in ranges {
+        let mut lines = LICENSE.lines().take(range.end);
+        writeln!(s, "{}", lines.nth(range.start - 1).unwrap());
+        for line in lines {
+            writeln!(s, "{}", line);
         }
     }
     s
@@ -96,6 +104,18 @@ pub fn commands(matches: &ArgMatches) {
                 );
             }
             print!("{}", section_text(v));
+        }
+        if matches.is_present("terms_and_conditions") {
+            print!("{}", license_text(vec![&(73..620)]));
+        }
+        if matches.is_present("preamble") {
+            print!("{}", license_text(vec![&(8..70)]));
+        }
+        if matches.is_present("how_to_apply") {
+            print!("{}", license_text(vec![&(623..675)]));
+        }
+        if matches.is_present("full") {
+            print!("{}", LICENSE);
         }
     }
 }
