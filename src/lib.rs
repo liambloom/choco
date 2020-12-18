@@ -25,3 +25,11 @@ pub mod meta;
 pub mod files;
 /// For retrieving license information
 pub mod license;
+/// Initializes a java package
+pub mod init;
+/// Module for config related stuff
+pub mod config;
+/// Module for error handling
+pub mod error_handling;
+/// A module to find an executable in the PATH
+pub mod find_exe;

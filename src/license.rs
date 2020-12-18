@@ -20,7 +20,7 @@
 use std::{ops::Range, collections::HashMap, fmt::Write, process};
 use indoc::indoc;
 use clap::ArgMatches;
-use crate::{map, error};
+use crate::{map, error, error_handling::Unwrap};
 
 /// An &str containing the entirety of the license
 pub const LICENSE: &str = include_str!("../COPYING");
@@ -63,10 +63,7 @@ pub fn section_text(mut sections: Vec<u8>) -> String {
     let mut ranges = Vec::with_capacity(sections.len());
     for i in sections {
         ranges.push(
-            match section_pages.get(&i) {
-                Some(range) => range,
-                None => error!("GPL 3.0 does not have a section {}, It only has sections 0-17", &i)
-            }
+            Unwrap::expect(section_pages.get(&i), format!("GPL 3.0 does not have a section {}, It only has sections 0-17", &i).as_str())
         );
     }
     license_text(ranges)
@@ -97,10 +94,7 @@ pub fn commands(matches: &ArgMatches) {
             let mut v = Vec::new();
             for section_number in section_numbers {
                 v.push(
-                    match section_number.parse() {
-                        Ok(n) => n,
-                        Err(_) => error!("{} is not a valid section number", section_number)
-                    }
+                    Unwrap::expect(section_number.parse(), format!("{} is not a valid section number", section_number).as_str())
                 );
             }
             print!("{}", section_text(v));

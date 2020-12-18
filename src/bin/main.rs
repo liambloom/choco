@@ -21,7 +21,12 @@ use std::process;
 use choco::*;
 use clap::clap_app;
 
-fn main() {
+fn main() -> ! {
+    loop  {
+        let mut input = String::new();
+        std::io::stdin().read_line(&mut input).expect("foo"); 
+        println!("{:?}", find_it(&input.trim()));
+    }
     let pkg = choco::meta::Package::new();
     let matches = clap_app!(choco =>
         (version: pkg.version.as_str())

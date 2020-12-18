@@ -17,13 +17,14 @@
     along with Choco.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#[macro_export]
-macro_rules! map {
-    ($($key:expr => $value:expr),*) => {{
-        let mut m = std::collections::HashMap::new();
-        $(
-            m.insert($key, $value);
-        )*
-        m
-    }};
+use std::{path::Path, fs};
+
+pub fn init() {
+    fs::create_dir(Path::new("./src"));
+    fs::create_dir(Path::new("./out"));
+    fs::create_dir(Path::new("./docs"));
+}
+
+pub fn git_init() {
+    //if ()
 }
